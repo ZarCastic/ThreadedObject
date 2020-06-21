@@ -8,7 +8,8 @@ compiler:
 
 # Build steps
 jobs: 
-  - stage: "Build"
-  script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make
-  - stage: "Tests"
-  script: ./tests/unit_tests
+  include:
+    - stage: "Build"
+    script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make
+    - stage: "Tests"
+    script: ./tests/unit_tests
