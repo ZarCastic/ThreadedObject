@@ -1,7 +1,18 @@
 FROM ubuntu:latest
 
 RUN apt update 
-RUN apt install build-essential cmake git wget clang-format gdb zsh python3-dev python3-pip python3-setuptools -y
+RUN apt install -y \
+    build-essential \
+    cmake \
+    git \
+    clang \
+    wget \
+    clang-format \
+    gdb \
+    zsh \
+    python3-dev \
+    python3-pip \
+    python3-setuptools 
 RUN pip3 install thefuck
 
 RUN wget https://github.com/google/googletest/archive/release-1.10.0.tar.gz ; \

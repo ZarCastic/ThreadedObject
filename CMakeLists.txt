@@ -5,8 +5,6 @@ project(ThreadedObject CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CPP_COMPILER g++)
-set(CMAKE_CPP_COMPILER gcc)
 
 include(cmake/googletest.cmake)
 fetch_googletest(
