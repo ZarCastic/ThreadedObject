@@ -5,10 +5,13 @@ compiler:
   - clang
   - gcc
 
+before-script: 
+  - 
+
 # Build steps
 script:
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build
   - cd build
-  - cmake ../tests && make
-  - ./test.bin
+  - cmake .. && make
+  - ./tests/unit_tests
