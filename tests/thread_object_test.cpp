@@ -26,4 +26,6 @@ TEST(ThreadObject, AsyncCallback) {
   EXPECT_TRUE(
       test_util::waitFor([&callback_done]() -> bool { return callback_done; },
                          std::chrono::seconds(1)));
+  thread.stopThread();
+  thread.join();
 }

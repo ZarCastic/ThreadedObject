@@ -1,4 +1,5 @@
 #include "thread_object.h"
+#include <iostream>
 #include <optional>
 
 namespace ThreadLib {
@@ -6,7 +7,8 @@ namespace ThreadLib {
 ThreadObject::ThreadObject(const std::string& thread_name)
     : __name__(thread_name),
       __thread_mutex__(std::make_shared<std::mutex>()),
-      __queued_jobs__(std::make_shared<std::queue<std::function<void()>>>()) {}
+      __queued_jobs__(std::make_shared<std::queue<std::function<void()>>>()),
+      __queue_mutex__(std::make_shared<std::mutex>()) {}
 
 ThreadObject::ThreadObject(const ThreadObject& other) {}
 
@@ -25,8 +27,14 @@ void ThreadObject::stopThread() noexcept {
   __end_thread__ = true;
 }
 
-void ThreadObject::join() noexcept { return __thread__->join(); }
-bool ThreadObject::joinable() const noexcept { return __thread__->joinable(); }
+void ThreadObject::join() noexcept {
+  std::lock_guard<std::mutex> lock(*__thread_mutex__);
+  return __thread__->join();
+}
+bool ThreadObject::joinable() const noexcept {
+  std::lock_guard<std::mutex> lock(*__thread_mutex__);
+  return __thread__->joinable();
+}
 
 void ThreadObject::run() {
   while (!__end_thread__) {
@@ -44,6 +52,9 @@ void ThreadObject::addCallback(std::function<void()> callback) noexcept {
 
 std::optional<std::function<void()>> ThreadObject::nextJob() noexcept {
   std::lock_guard<std::mutex> lock(*__queue_mutex__);
+  if (__queued_jobs__->empty()) {
+    return std::optional<std::function<void()>>();
+  }
   auto retval = __queued_jobs__->front();
   __queued_jobs__->pop();
   return retval;
