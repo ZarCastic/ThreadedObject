@@ -1,15 +1,11 @@
 language: cpp
+os:
+- linux
 dist: bionic
 
-# Compiler selection
 compiler:
   - clang
   - gcc
 
 # Build steps
-jobs: 
-  include:
-    - stage: "Build"
-    script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make
-    - stage: "Tests"
-    script: ./tests/unit_tests
+script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make && ./tests/unit_tests
