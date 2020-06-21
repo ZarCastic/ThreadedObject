@@ -6,13 +6,9 @@ compiler:
   - clang
   - gcc
 
-before-script: 
-  - 
-
 # Build steps
-script:
-  - cd ${TRAVIS_BUILD_DIR}
-  - mkdir build
-  - cd build
-  - cmake .. && make
-  - ./tests/unit_tests
+jobs: 
+  - stage: "Build"
+  script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make
+  - stage: "Tests"
+  script: ./tests/unit_tests
