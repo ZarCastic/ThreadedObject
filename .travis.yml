@@ -1,0 +1,14 @@
+language: cpp
+
+# Compiler selection
+compiler:
+  - clang
+  - gcc
+
+# Build steps
+script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - mkdir build
+  - cd build
+  - cmake ../tests && make
+  - ./test.bin
