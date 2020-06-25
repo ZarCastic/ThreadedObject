@@ -8,7 +8,7 @@ TEST(ThreadObject, StartStop) {
   ThreadLib::ThreadObject thread;
   thread.startThread();
 
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+  std::this_thread::sleep_for(std::chrono::milliseconds(250));
   EXPECT_TRUE(thread.joinable());
   thread.stopThread();
   thread.join();
@@ -25,7 +25,7 @@ TEST(ThreadObject, AsyncCallback) {
 
   EXPECT_TRUE(
       test_util::waitFor([&callback_done]() -> bool { return callback_done; },
-                         std::chrono::seconds(1)));
+                         std::chrono::milliseconds(100)));
   thread.stopThread();
   thread.join();
 }
