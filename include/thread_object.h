@@ -32,11 +32,11 @@ class ThreadObject {
   std::optional<std::function<void()>> nextJob() noexcept;
 
   std::shared_ptr<std::thread> __thread__ = nullptr;
-  std::shared_ptr<std::mutex> __thread_mutex__;
+  mutable std::mutex __thread_mutex__;
   const std::string __name__;
   std::atomic_bool __end_thread__ = false;
-  std::shared_ptr<std::queue<std::function<void()>>> __queued_jobs__;
-  std::shared_ptr<std::mutex> __queue_mutex__;
+  std::queue<std::function<void()>> __queued_jobs__;
+  mutable std::mutex __queue_mutex__;
 };
 
 }  // namespace ThreadLib
