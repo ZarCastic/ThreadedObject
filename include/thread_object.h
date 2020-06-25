@@ -27,16 +27,20 @@ class ThreadObject {
   void join() noexcept;
   bool joinable() const noexcept;
 
+  bool isRunning() const noexcept;
+
+  std::thread::id getId() const noexcept;
+
  private:
   virtual void run();
   std::optional<std::function<void()>> nextJob() noexcept;
 
   std::shared_ptr<std::thread> __thread__ = nullptr;
-  mutable std::mutex __thread_mutex__;
-  const std::string __name__;
+  mutable std::shared_ptr<std::mutex> __thread_mutex__;
+  std::string __name__;
   std::atomic_bool __end_thread__ = false;
-  std::queue<std::function<void()>> __queued_jobs__;
-  mutable std::mutex __queue_mutex__;
+  std::shared_ptr<std::queue<std::function<void()>>> __queued_jobs__;
+  mutable std::shared_ptr<std::mutex> __queue_mutex__;
 };
 
 }  // namespace ThreadLib
