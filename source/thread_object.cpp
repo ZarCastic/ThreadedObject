@@ -1,70 +1,55 @@
 #include "thread_object.h"
-#include <iostream>
 #include <optional>
+#include <utility>
 
 namespace ThreadLib {
 
-ThreadObject::ThreadObject(const std::string& thread_name)
-    : __name__(thread_name),
-      __thread_mutex__(std::make_shared<std::mutex>()),
-      __queued_jobs__(std::make_shared<std::queue<std::function<void()>>>()),
-      __queue_mutex__(std::make_shared<std::mutex>()) {}
-
-ThreadObject::ThreadObject(const ThreadObject& other)
-    : __thread__(other.__thread__),
-      __name__(other.__name__),
-      __thread_mutex__(other.__thread_mutex__),
-      __queued_jobs__(other.__queued_jobs__),
-      __queue_mutex__(other.__queue_mutex__) {}
-
-ThreadObject& ThreadObject::operator=(const ThreadObject& other) {
-  __thread__ = other.__thread__;
-  __name__ = other.__name__;
-  __thread_mutex__ = other.__thread_mutex__;
-  __queued_jobs__ = other.__queued_jobs__;
-  __queue_mutex__ = other.__queue_mutex__;
-  return *this;
-}
+ThreadObject::ThreadObject(std::string thread_name)
+    : _name_(std::move(thread_name)),
+      _thread_mutex_(std::make_shared<std::mutex>()),
+      _queued_jobs_(std::make_shared<std::queue<std::function<void()>>>()),
+      _queue_mutex_(std::make_shared<std::mutex>()),
+      _end_thread_(std::make_shared<std::atomic_bool>(false)) {}
 
 void ThreadObject::startThread() noexcept {
-  if (!__thread_mutex__) {
+  if (!_thread_mutex_) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(*__thread_mutex__);
-  if (!__thread__) {
-    __end_thread__ = false;
-    __thread__ = std::make_shared<std::thread>(&ThreadObject::run, this);
+  std::lock_guard<std::mutex> lock(*_thread_mutex_);
+  if (!_thread_) {
+    *_end_thread_ = false;
+    _thread_ = std::make_shared<std::thread>(&ThreadObject::run, this);
   }
 }
 
 void ThreadObject::stopThread() noexcept {
-  if (!__thread_mutex__) {
+  if (!_thread_mutex_) {
     return;
   }
-  std::lock_guard<std::mutex> lock(*__thread_mutex__);
-  __end_thread__ = true;
+  std::lock_guard<std::mutex> lock(*_thread_mutex_);
+  *_end_thread_ = true;
 }
 
 void ThreadObject::join() noexcept {
   if (!joinable()) {
     return;
   }
-  std::lock_guard<std::mutex> lock(*__thread_mutex__);
-  return __thread__->join();
+  std::lock_guard<std::mutex> lock(*_thread_mutex_);
+  return _thread_->join();
 }
 bool ThreadObject::joinable() const noexcept {
-  if (!__thread_mutex__) {
+  if (!_thread_mutex_) {
     return false;
   }
-  std::lock_guard<std::mutex> lock(*__thread_mutex__);
-  return (__thread__ != nullptr) && __thread__->joinable();
+  std::lock_guard<std::mutex> lock(*_thread_mutex_);
+  return (_thread_ != nullptr) && _thread_->joinable();
 }
 
 bool ThreadObject::isRunning() const noexcept { return joinable(); }
 
 void ThreadObject::run() {
-  while (!__end_thread__) {
+  while (!*_end_thread_) {
     // execute all jobs
     for (auto job = nextJob(); job.has_value(); job = nextJob()) {
       job.value()();
@@ -72,30 +57,30 @@ void ThreadObject::run() {
   }
 }
 
-void ThreadObject::addCallback(std::function<void()> callback) noexcept {
-  if (!__queue_mutex__) {
+void ThreadObject::addCallback(const std::function<void()>& callback) noexcept {
+  if (!_queue_mutex_) {
     return;
   }
-  std::lock_guard<std::mutex> lock(*__queue_mutex__);
-  __queued_jobs__->push(callback);
+  std::lock_guard<std::mutex> lock(*_queue_mutex_);
+  _queued_jobs_->push(callback);
 }
 
 std::optional<std::function<void()>> ThreadObject::nextJob() noexcept {
-  if (!__queue_mutex__) {
+  if (!_queue_mutex_) {
     return {};
   }
-  std::lock_guard<std::mutex> lock(*__queue_mutex__);
-  if (__queued_jobs__->empty()) {
+  std::lock_guard<std::mutex> lock(*_queue_mutex_);
+  if (_queued_jobs_->empty()) {
     return std::optional<std::function<void()>>();
   }
-  auto retval = __queued_jobs__->front();
-  __queued_jobs__->pop();
+  auto retval = _queued_jobs_->front();
+  _queued_jobs_->pop();
   return retval;
 }
 
 std::thread::id ThreadObject::getId() const noexcept {
-  if (__thread__ != nullptr) {
-    return __thread__->get_id();
+  if (_thread_ != nullptr) {
+    return _thread_->get_id();
   }
   return {};
 }

@@ -14,15 +14,15 @@ namespace ThreadLib {
 
 class ThreadObject {
  public:
-  ThreadObject(const std::string& thread_name = "");
-  ThreadObject(const ThreadObject& other);
+  explicit ThreadObject(std::string thread_name = "");
+  ThreadObject(const ThreadObject& other) = default;
   ThreadObject(ThreadObject&&) = delete;
-  ThreadObject& operator=(const ThreadObject& other);
+  ThreadObject& operator=(const ThreadObject& other) = default;
   ThreadObject& operator=(ThreadObject&&) = delete;
 
-  virtual void addCallback(std::function<void()> callback) noexcept;
   void startThread() noexcept;
   void stopThread() noexcept;
+  void addCallback(const std::function<void()>& callback) noexcept;
 
   void join() noexcept;
   bool joinable() const noexcept;
@@ -35,12 +35,12 @@ class ThreadObject {
   virtual void run();
   std::optional<std::function<void()>> nextJob() noexcept;
 
-  std::shared_ptr<std::thread> __thread__ = nullptr;
-  mutable std::shared_ptr<std::mutex> __thread_mutex__;
-  std::string __name__;
-  std::atomic_bool __end_thread__ = false;
-  std::shared_ptr<std::queue<std::function<void()>>> __queued_jobs__;
-  mutable std::shared_ptr<std::mutex> __queue_mutex__;
+  std::shared_ptr<std::thread> _thread_ = nullptr;
+  mutable std::shared_ptr<std::mutex> _thread_mutex_;
+  std::string _name_;
+  std::shared_ptr<std::atomic_bool> _end_thread_ = nullptr;
+  std::shared_ptr<std::queue<std::function<void()>>> _queued_jobs_;
+  mutable std::shared_ptr<std::mutex> _queue_mutex_;
 };
 
 }  // namespace ThreadLib

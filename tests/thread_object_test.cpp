@@ -1,6 +1,5 @@
-#include "thread_object.h"
 #include <gtest/gtest.h>
-#include <iostream>
+#include <thread_object.h>
 #include "test_util/util.h"
 
 TEST(ThreadObject, Constructability) {
@@ -8,7 +7,6 @@ TEST(ThreadObject, Constructability) {
   thread.startThread();
 
   EXPECT_NE(std::this_thread::get_id(), thread.getId());
-
   thread.stopThread();
   thread.join();
 }
@@ -39,8 +37,6 @@ TEST(ThreadObject, Copyability) {
   thread_1.join();
   thread_2.join();
   thread_3.join();
-
-  std::cout << "ciao" << std::endl;
 }
 
 TEST(ThreadObject, StartStop) {

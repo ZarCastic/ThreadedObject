@@ -5,6 +5,12 @@ project(ThreadedObject CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#set(CMAKE_CXX_CLANG_TIDY
+#  clang-tidy-9;
+#  -header-filter=.;
+#  -checks=*;
+#  -warnings-as-errors=*;
+#)
 
 include(cmake/googletest.cmake)
 fetch_googletest(

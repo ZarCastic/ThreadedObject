@@ -1,18 +1,20 @@
-FROM ubuntu:latest
+FROM ubuntu:bionic
 
 RUN apt update 
 RUN apt install -y \
     build-essential \
     cmake \
     git \
-    clang \
+    clang-9 \
     wget \
-    clang-format \
+    clang-format-9 \
     gdb \
     zsh \
     python3-dev \
     python3-pip \
-    python3-setuptools 
+    python3-setuptools \ 
+    sudo \
+    clang-tidy-9 
 RUN pip3 install thefuck
 
 RUN wget https://github.com/google/googletest/archive/release-1.10.0.tar.gz ; \
