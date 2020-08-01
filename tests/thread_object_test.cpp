@@ -1,3 +1,6 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-err58-cpp"
+
 #include <gtest/gtest.h>
 #include <thread_object.h>
 #include "test_util/util.h"
@@ -9,34 +12,6 @@ TEST(ThreadObject, Constructability) {
   EXPECT_NE(std::this_thread::get_id(), thread.getId());
   thread.stopThread();
   thread.join();
-}
-
-TEST(ThreadObject, Copyability) {
-  ThreadLib::ThreadObject thread_1;
-  thread_1.startThread();
-  ThreadLib::ThreadObject thread_2(thread_1);
-  EXPECT_TRUE(thread_2.isRunning());
-
-  EXPECT_NE(std::this_thread::get_id(), thread_1.getId());
-  EXPECT_EQ(thread_1.getId(), thread_2.getId());
-
-  ThreadLib::ThreadObject thread_3;
-  thread_3.startThread();
-  EXPECT_NE(std::this_thread::get_id(), thread_3.getId());
-  EXPECT_NE(thread_1.getId(), thread_3.getId());
-  EXPECT_NE(thread_2.getId(), thread_3.getId());
-
-  thread_2 = thread_3;
-  EXPECT_NE(thread_2.getId(), thread_1.getId());
-  EXPECT_EQ(thread_2.getId(), thread_3.getId());
-
-  thread_1.stopThread();
-  thread_2.stopThread();
-  thread_3.stopThread();
-
-  thread_1.join();
-  thread_2.join();
-  thread_3.join();
 }
 
 TEST(ThreadObject, StartStop) {
@@ -60,7 +35,9 @@ TEST(ThreadObject, AsyncCallback) {
 
   EXPECT_TRUE(
       test_util::waitFor([&callback_done]() -> bool { return callback_done; },
-                         std::chrono::milliseconds(100)));
+                         std::chrono::milliseconds(1)));
   thread.stopThread();
   thread.join();
 }
+
+#pragma clang diagnostic pop
