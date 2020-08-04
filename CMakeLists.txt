@@ -20,10 +20,6 @@ fetch_googletest(
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 
-set(SOURCES ${SOURCES}
-    ${CMAKE_CURRENT_LIST_DIR}/source/thrad_object.cpp
-)
-
 
 enable_testing()
 add_subdirectory(tests)

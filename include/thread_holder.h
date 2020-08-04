@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <future>
 #include <memory>
 #include "thread_object.h"
@@ -33,8 +34,6 @@ class ThreadHolder {
     future.wait();
     return future.get();
   }
-
-  void cleanExit() noexcept;
 
  private:
   std::shared_ptr<ThreadObject> _thread_;
