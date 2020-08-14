@@ -12,4 +12,4 @@ jobs:
       compiler: clang
       script: cd ${TRAVIS_BUILD_DIR}/tests && mkdir test_build && cd test_build && cmake .. && make && ./unit_tests
     - stage: build_demos
-      script: cd ${TRAVIS_BUILD_DIR}/demos && mkdir demo_build && cd demo_build && cmake ../single_holder && ./single_holder
+      script: cd ${TRAVIS_BUILD_DIR}/demos && mkdir demo_build && cd demo_build && cmake ../single_holder && make && ./single_holder
