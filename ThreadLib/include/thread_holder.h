@@ -3,13 +3,14 @@
 #include <cassert>
 #include <future>
 #include <memory>
+#include "macros.h"
 #include "thread_object.h"
 
 namespace ThreadLib {
 
 class ThreadHolder {
  public:
-  ThreadHolder(std::string name = "");
+  explicit ThreadHolder(std::string name = "");
   ThreadHolder(const ThreadHolder& other) = default;
   ThreadHolder& operator=(const ThreadHolder& other) = default;
   ThreadHolder(ThreadHolder&&) = delete;
@@ -34,6 +35,8 @@ class ThreadHolder {
     future.wait();
     return future.get();
   }
+
+  static std::thread::id getThreadId() noexcept;
 
  private:
   std::shared_ptr<ThreadObject> _thread_;

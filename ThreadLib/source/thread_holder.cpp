@@ -14,4 +14,8 @@ void ThreadHolder::asyncCall(
   _thread_->addCallback([function]() { function(); });
 }
 
+std::thread::id ThreadHolder::getThreadId() noexcept {
+  return std::this_thread::get_id();
+}
+
 }  // namespace ThreadLib

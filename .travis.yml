@@ -8,4 +8,11 @@ compiler:
   - gcc
 
 # Build steps
-script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make && ./tests/unit_tests
+script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make && ./unit_tests
+
+jobs:
+  include:
+    - stage: build_and_run_tests
+      script: cd ${TRAVIS_BUILD_DIR}/tests && mkdir test_build && cd test_build && cmake .. && make && ./tests/unit_tests
+    - stage: build_demos
+      script: cd ${TRAVIS_BUILD_DIR}/demos && mkdir demo_build && cd demo_build && cmake ../single_holder && ./single_holder
