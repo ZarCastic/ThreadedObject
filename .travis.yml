@@ -7,9 +7,6 @@ compiler:
   - clang
   - gcc
 
-# Build steps
-script: cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .. && make && ./unit_tests
-
 jobs:
   include:
     - stage: build_and_run_tests
