@@ -5,7 +5,11 @@ dist: bionic
 
 jobs:
   include:
-    - stage: build_and_run_tests
+    - stage: build_and_run_tests_gcc
+      compiler: gcc
+      script: cd ${TRAVIS_BUILD_DIR}/tests && mkdir test_build && cd test_build && cmake .. && make && ./unit_tests
+    - stage: build_and_run_tests_gcc
+      compiler: clang
       script: cd ${TRAVIS_BUILD_DIR}/tests && mkdir test_build && cd test_build && cmake .. && make && ./unit_tests
     - stage: build_demos
       script: cd ${TRAVIS_BUILD_DIR}/demos && mkdir demo_build && cd demo_build && cmake ../single_holder && ./single_holder
