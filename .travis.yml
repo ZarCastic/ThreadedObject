@@ -1,11 +1,7 @@
 language: cpp
 os:
-- linux
+    - linux
 dist: bionic
-
-compiler:
-  - clang
-  - gcc
 
 jobs:
   include:
