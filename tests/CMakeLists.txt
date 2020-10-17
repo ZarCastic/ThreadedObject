@@ -7,13 +7,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-include(../ThreadLib/CMakeLists.txt)
-include_directories(../ThreadLib/include)
+include(${CMAKE_CURRENT_LIST_DIR}/../ThreadLib/CMakeLists.txt)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../ThreadLib/include)
 
-include(../cmake/googletest.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../cmake/googletest.cmake)
 fetch_googletest(
-        ${PROJECT_SOURCE_DIR}/../cmake
-        ${PROJECT_BINARY_DIR}/googletest
+        ${CMAKE_CURRENT_LIST_DIR}/../cmake
+        ${CMAKE_CURRENT_LIST_DIR}/googletest
 )
 enable_testing()
 
